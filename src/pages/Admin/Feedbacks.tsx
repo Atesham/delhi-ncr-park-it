@@ -116,6 +116,118 @@ export default function AdminFeedbacks() {
       .join('')
       .toUpperCase();
   };
+  
+  // Define the renderFeedbackCards function inside the component
+  const renderFeedbackCards = (feedbacks: Feedback[]) => {
+    if (feedbacks.length === 0) {
+      return (
+        <div className="col-span-full">
+          <p className="text-center text-muted-foreground py-8">
+            No feedback data available
+          </p>
+        </div>
+      );
+    }
+    
+    return feedbacks.map((feedback) => (
+      <Card key={feedback.id} className={feedback.status === 'flagged' ? 'border-red-300' : ''}>
+        <CardHeader className="pb-3">
+          <div className="flex justify-between items-start">
+            <div className="flex items-center space-x-2">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback>{getInitials(feedback.userName)}</AvatarFallback>
+              </Avatar>
+              <div>
+                <CardTitle className="text-base">{feedback.userName}</CardTitle>
+                <div className="flex mt-1">
+                  {Array(5).fill(0).map((_, i) => (
+                    <Star 
+                      key={i} 
+                      className={`h-4 w-4 ${i < feedback.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`} 
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+            
+            {feedback.status === 'flagged' && (
+              <Badge variant="outline" className="border-red-300 text-red-500">
+                <Flag className="h-3 w-3 mr-1" /> Flagged
+              </Badge>
+            )}
+          </div>
+          
+          {feedback.locationName && (
+            <div className="text-xs text-muted-foreground flex items-center mt-1">
+              <MapPin className="h-3 w-3 mr-1" />
+              {feedback.locationName}
+            </div>
+          )}
+          
+          <div className="text-xs text-muted-foreground flex items-center mt-1">
+            <Calendar className="h-3 w-3 mr-1" />
+            {formatDate(feedback.timestamp)}
+          </div>
+        </CardHeader>
+        
+        <CardContent>
+          <p className="text-sm">{feedback.comment}</p>
+          
+          {feedback.adminResponse && (
+            <div className="mt-3 bg-muted p-3 rounded-md">
+              <div className="text-xs text-muted-foreground mb-1">Admin Response:</div>
+              <p className="text-sm">{feedback.adminResponse}</p>
+            </div>
+          )}
+        </CardContent>
+        
+        <CardFooter className="flex flex-col gap-2">
+          {!feedback.adminResponse ? (
+            <>
+              <Textarea 
+                placeholder="Write a response..."
+                value={feedbackResponse[feedback.id] || ''}
+                onChange={(e) => handleResponseChange(feedback.id, e.target.value)}
+                className="text-sm"
+              />
+              <div className="flex justify-between w-full">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => handleFlagFeedback(feedback.id)}
+                >
+                  <Flag className="h-3 w-3 mr-1" /> Flag
+                </Button>
+                <Button 
+                  size="sm" 
+                  onClick={() => handleSubmitResponse(feedback.id)}
+                  disabled={!feedbackResponse[feedback.id]?.trim()}
+                >
+                  <SendHorizontal className="h-3 w-3 mr-1" /> Respond
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="flex justify-between w-full">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={() => handleFlagFeedback(feedback.id)}
+              >
+                <Flag className="h-3 w-3 mr-1" /> Flag
+              </Button>
+              <Button 
+                size="sm" 
+                variant="ghost"
+              >
+                <ThumbsUp className="h-3 w-3 mr-1" /> Helpful
+              </Button>
+            </div>
+          )}
+        </CardFooter>
+      </Card>
+    ));
+  };
 
   return (
     <AdminLayout title="Manage Feedback">
@@ -339,118 +451,6 @@ export default function AdminFeedbacks() {
           </p>
         </div>
       )}
-
-      {/* Helper function to render feedback cards */}
-      {function renderFeedbackCards(feedbacks: Feedback[]) {
-        if (feedbacks.length === 0) {
-          return (
-            <div className="col-span-full">
-              <p className="text-center text-muted-foreground py-8">
-                No feedback data available
-              </p>
-            </div>
-          );
-        }
-        
-        return feedbacks.map((feedback) => (
-          <Card key={feedback.id} className={feedback.status === 'flagged' ? 'border-red-300' : ''}>
-            <CardHeader className="pb-3">
-              <div className="flex justify-between items-start">
-                <div className="flex items-center space-x-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>{getInitials(feedback.userName)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-base">{feedback.userName}</CardTitle>
-                    <div className="flex mt-1">
-                      {Array(5).fill(0).map((_, i) => (
-                        <Star 
-                          key={i} 
-                          className={`h-4 w-4 ${i < feedback.rating ? "text-yellow-400 fill-yellow-400" : "text-gray-300"}`} 
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-                
-                {feedback.status === 'flagged' && (
-                  <Badge variant="outline" className="border-red-300 text-red-500">
-                    <Flag className="h-3 w-3 mr-1" /> Flagged
-                  </Badge>
-                )}
-              </div>
-              
-              {feedback.locationName && (
-                <div className="text-xs text-muted-foreground flex items-center mt-1">
-                  <MapPin className="h-3 w-3 mr-1" />
-                  {feedback.locationName}
-                </div>
-              )}
-              
-              <div className="text-xs text-muted-foreground flex items-center mt-1">
-                <Calendar className="h-3 w-3 mr-1" />
-                {formatDate(feedback.timestamp)}
-              </div>
-            </CardHeader>
-            
-            <CardContent>
-              <p className="text-sm">{feedback.comment}</p>
-              
-              {feedback.adminResponse && (
-                <div className="mt-3 bg-muted p-3 rounded-md">
-                  <div className="text-xs text-muted-foreground mb-1">Admin Response:</div>
-                  <p className="text-sm">{feedback.adminResponse}</p>
-                </div>
-              )}
-            </CardContent>
-            
-            <CardFooter className="flex flex-col gap-2">
-              {!feedback.adminResponse ? (
-                <>
-                  <Textarea 
-                    placeholder="Write a response..."
-                    value={feedbackResponse[feedback.id] || ''}
-                    onChange={(e) => handleResponseChange(feedback.id, e.target.value)}
-                    className="text-sm"
-                  />
-                  <div className="flex justify-between w-full">
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      onClick={() => handleFlagFeedback(feedback.id)}
-                    >
-                      <Flag className="h-3 w-3 mr-1" /> Flag
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      onClick={() => handleSubmitResponse(feedback.id)}
-                      disabled={!feedbackResponse[feedback.id]?.trim()}
-                    >
-                      <SendHorizontal className="h-3 w-3 mr-1" /> Respond
-                    </Button>
-                  </div>
-                </>
-              ) : (
-                <div className="flex justify-between w-full">
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={() => handleFlagFeedback(feedback.id)}
-                  >
-                    <Flag className="h-3 w-3 mr-1" /> Flag
-                  </Button>
-                  <Button 
-                    size="sm" 
-                    variant="ghost"
-                  >
-                    <ThumbsUp className="h-3 w-3 mr-1" /> Helpful
-                  </Button>
-                </div>
-              )}
-            </CardFooter>
-          </Card>
-        ));
-      }}
     </AdminLayout>
   );
 }

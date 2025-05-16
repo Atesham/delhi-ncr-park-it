@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
 import { DataProvider } from "./contexts/DataContext";
 import { Navbar } from "./components/Navbar";
@@ -31,6 +31,17 @@ import AdminLocationEdit from "./pages/Admin/LocationEdit";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
+
+// Component to conditionally render the Footer
+const ConditionalFooter = () => {
+  const location = useLocation();
+  const isAdminPage = location.pathname.startsWith('/admin');
+  
+  // Don't render the Footer on admin pages
+  if (isAdminPage) return null;
+  
+  return <Footer />;
+};
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -67,7 +78,7 @@ const App = () => (
                   <Route path="*" element={<NotFound />} />
                 </Routes>
               </main>
-              <Footer />
+              <ConditionalFooter />
             </div>
           </DataProvider>
         </AuthProvider>

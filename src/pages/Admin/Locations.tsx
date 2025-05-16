@@ -44,6 +44,12 @@ export default function AdminLocations() {
     });
   };
 
+  const getBadgeVariant = (availableSlots: number): "default" | "destructive" | "outline" | "secondary" => {
+    if (availableSlots > 10) return "secondary";
+    if (availableSlots > 0) return "outline";
+    return "destructive";
+  };
+
   return (
     <AdminLayout title="Manage Locations">
       <div className="mb-6 flex flex-col sm:flex-row gap-4 justify-between">
@@ -95,8 +101,8 @@ export default function AdminLocations() {
                     <TableCell className="hidden lg:table-cell">{location.totalSlots}</TableCell>
                     <TableCell>
                       <Badge 
-                        variant={location.availableSlots > 10 ? "success" : location.availableSlots > 0 ? "warning" : "destructive"}
-                        className="bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-900"
+                        variant={getBadgeVariant(location.availableSlots)}
+                        className={location.availableSlots > 10 ? "bg-green-100 text-green-800 hover:bg-green-200 hover:text-green-900" : ""}
                       >
                         {location.availableSlots}
                       </Badge>

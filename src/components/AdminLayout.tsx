@@ -71,6 +71,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
                       <SidebarMenuButton 
                         isActive={isActive(item.path)}
                         tooltip={item.label}
+                        className="hover:bg-primary/10"
                         asChild
                       >
                         <Link to={item.path}>
@@ -96,13 +97,19 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({ children, title }) => 
           </SidebarContent>
         </Sidebar>
 
-        <SidebarInset>
+        <SidebarInset className="bg-background">
           <div className="px-4 py-8 md:px-8 w-full">
             <div className="flex items-center justify-between mb-8">
               <div>
                 <h1 className="text-2xl font-bold">{title}</h1>
               </div>
-              <SidebarTrigger />
+              <SidebarTrigger className="p-2 rounded-md hover:bg-gray-100">
+                <div className="w-6 h-5 flex flex-col justify-between">
+                  <span className="h-[2px] w-full bg-gray-600 rounded-full"></span>
+                  <span className="h-[2px] w-3/4 bg-gray-600 rounded-full self-end"></span>
+                  <span className="h-[2px] w-full bg-gray-600 rounded-full"></span>
+                </div>
+              </SidebarTrigger>
             </div>
             {children}
           </div>
