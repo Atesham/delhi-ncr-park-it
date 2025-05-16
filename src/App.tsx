@@ -22,6 +22,12 @@ import BookingConfirmation from "./pages/BookingConfirmation";
 import BookingDetail from "./pages/BookingDetail";
 import Feedback from "./pages/Feedback";
 import AdminDashboard from "./pages/Admin/Dashboard";
+import AdminLocations from "./pages/Admin/Locations";
+import AdminUsers from "./pages/Admin/Users";
+import AdminBookings from "./pages/Admin/Bookings";
+import AdminPayments from "./pages/Admin/Payments";
+import AdminFeedbacks from "./pages/Admin/Feedbacks";
+import AdminLocationEdit from "./pages/Admin/LocationEdit";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -51,6 +57,12 @@ const App = () => (
                   <Route path="/booking/:bookingId" element={<BookingDetail />} />
                   <Route path="/feedback/:bookingId" element={<Feedback />} />
                   <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/admin/locations" element={<AdminLocations />} />
+                  <Route path="/admin/locations/:locationId" element={<AdminLocationEdit />} />
+                  <Route path="/admin/users" element={<AdminUsers />} />
+                  <Route path="/admin/bookings" element={<AdminBookings />} />
+                  <Route path="/admin/payments" element={<AdminPayments />} />
+                  <Route path="/admin/feedback" element={<AdminFeedbacks />} />
                   {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
