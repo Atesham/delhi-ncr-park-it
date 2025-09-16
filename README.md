@@ -1,4 +1,4 @@
-# Welcome to your My BCA project
+# Welcome to  My BCA project
 
 # Name  -Lets Park it.
 
@@ -30,6 +30,5 @@ This project is built with:
 
 - Vite
 - TypeScript/JavaScript
-- React
 - shadcn-ui
 - CSS
